@@ -25,9 +25,25 @@ object VenusExplorers extends App {
 	// SUBSEQUENT LINES OF INPUT
 
 	//Use the recursive getExplorers function to generate a list of Explorer objects
-	val explorers = getExplorers(source)
+	val explorers = try{
+		getExplorers(source)
+	}catch{
+		//If a MatchError is thrown, matching to explorerInitPattern has failed and thus error is in initialisation line
+		case me:MatchError =>
+			println("Invalid input in explorer initialisation. Line should contain: [right coord] [top coord] [facing direction (N,S,E,W)]")
+			System.exit(0)
+			//returning list of explorer for safe compilation
+			List[Explorer]()
+		//If an IllegalArgumentException is thrown, failure is inside the move instruction and thus error is in movement line
+		case iae:IllegalArgumentException =>
+			println(iae.getMessage)
+			System.exit(0)
+			//returning list of explorer for safe compilation
+			List[Explorer]()
+	}
+
 	//Output the list of explorers to stdout
-	println(explorers mkString "\n")
+	println(explorers.mkString("\n"))
 
 
 	// FUNCTION DEFINITIONS
